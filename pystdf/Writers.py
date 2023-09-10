@@ -36,7 +36,7 @@ class TextWriter:
         self.delimiter = delimiter
 
     @staticmethod
-    def text_format(rectype, field_index, value):
+    def text_format(self, rectype, field_index, value):
         field_type = rectype.fieldStdfTypes[field_index]
         if value is None:
             return ""
@@ -55,7 +55,7 @@ class TextWriter:
 
     def after_send(self, dataSource, data):
         line = '%s%s%s\n' % (data[0].__class__.__name__.upper(),self.delimiter,
-            self.delimiter.join([self.text_format(data[0], i, val) for i, val in enumerate(data[1])]))
+            self.delimiter.join([self.text_format(self, data[0], i, val) for i, val in enumerate(data[1])]))
         self.stream.write(line)
 
     def after_complete(self, dataSource):
