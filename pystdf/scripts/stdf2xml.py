@@ -39,8 +39,8 @@ import pystdf.V4
 gzPattern = re.compile('\.g?z', re.I)
 bz2Pattern = re.compile('\.bz2', re.I)
 
-def process_file(fn):
-    filename, = sys.argv[1:]
+def process_file(fnames):
+    filename = fnames[0]
 
     reopen_fn = None
     if filename is None:
@@ -60,15 +60,19 @@ def process_file(fn):
     else:
         f = open(filename, 'rb')
     p=Parser(inp=f, reopen_fn=reopen_fn)
-    p.addSink(XmlWriter())
-    p.parse()
+    if len(fnames)<2:
+        p.addSink(XmlWriter())
+        p.parse()
+    else:
+        with open(fnames[1],'w') as fout:
+            p.addSink(XmlWriter(stream=fout))
+            p.parse()
     f.close()
-
 def main():
     if len(sys.argv) < 2:
         print("Usage: %s <stdf file>" % (sys.argv[0]))
     else:
-        process_file(sys.argv[1])
+        process_file(sys.argv[1:])
 
 if __name__ == '__main__':
     main()
